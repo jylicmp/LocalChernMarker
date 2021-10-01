@@ -23,6 +23,6 @@ The formula used are followed
 
 [2] Raffaello Bianco and Raffaele Resta, Mapping topological order in coordinate space, [Phys. Rev. B 84, 241106(R) (2011)](https://doi.org/10.1103/PhysRevB.84.241106).
 
-[1] T. Rauch, T. Olsen, D. Vanderbilt, and I. Souza, Geometric and nongeometric contributions to the surface anomalous Hall conductivity, [Phys. Rev. B 98, 115108 (2018)](https://doi.org/10.1103/PhysRevB.98.115108).
+[3] T. Rauch, T. Olsen, D. Vanderbilt, and I. Souza, Geometric and nongeometric contributions to the surface anomalous Hall conductivity, [Phys. Rev. B 98, 115108 (2018)](https://doi.org/10.1103/PhysRevB.98.115108).
 
-[2] N. Varnava and D. Vanderbilt, Surfaces of axion insulators, [Phys. Rev. B 98, 245117 (2018)](https://doi.org/10.1103/PhysRevB.98.245117).
+[4] N. Varnava and D. Vanderbilt, Surfaces of axion insulators, [Phys. Rev. B 98, 245117 (2018)](https://doi.org/10.1103/PhysRevB.98.245117).
