@@ -1,5 +1,5 @@
 # LocalChernMarker
-This is a modified script about the calculation of local Chern marker in a matrix algorithm for 0,1,2 dimensional system. The routine bases on the [partial Chern number package](https://github.com/nicodemosvarnava/pcn) of PythTB ([http://www.physics.rutgers.edu/pythtb/index.html](http://www.physics.rutgers.edu/pythtb/index.html)).
+This is a modified script about the calculation of local Chern marker for 0,1,2 dimensional system. The routine bases on the [partial Chern number package](https://github.com/nicodemosvarnava/pcn) of PythTB ([http://www.physics.rutgers.edu/pythtb/index.html](http://www.physics.rutgers.edu/pythtb/index.html)). The routine is revised in a matrix algorithm that speeds up nearly 10 times than the primary code.
 
 **LocalChernMarker.py**
 
@@ -25,9 +25,7 @@ Here we provide examples using the script to calculate the local Chern marker in
 
 **Remark**
 
-This script is a modified version of [partial Chern number package](https://github.com/nicodemosvarnava/pcn). The calculation is revised in a matrix algorithm that speeds up nearly 10 times than the primary code.
-
-The formula used are followed
+The formula we used are followed
 
 [3] Raffaello Bianco and Raffaele Resta, Mapping topological order in coordinate space, [Phys. Rev. B 84, 241106(R) (2011)](https://doi.org/10.1103/PhysRevB.84.241106).
 
