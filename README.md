@@ -11,7 +11,7 @@ This script contains three functions: *lcm_2d(my_mode,n_occ)*, *lcm_1d(my_mode,n
 
 It is forceful to estimate whether the surface magnetic gap dominates the trivial finite size gap, especially in studying the half-quantized surface response in axion insulators. For more information see
 
-[1] Y. Wan, J. Li, and Q. Liu, Topological Magnetoelectric Response in Ferromagnetic Axion Insulators, [arXiv:2109.14160 (2021)](https://arxiv.org/abs/2109.14160).
+[1] Y. Wan, J. Li, and Q. Liu, Topological magnetoelectric response in ferromagnetic axion insulators, [Natl. Sci. Rev. 9, nwac138 (2022)](https://doi.org/10.1093/nsr/nwac138).
 
 (3) *lcm_0d(my_model,n_occ,i,j)* is prepared for a tight-binding model with open boundary condition in all three directions. This function gives Cij(l) with i,j = (0,1,2) for (x,y,z).
 
