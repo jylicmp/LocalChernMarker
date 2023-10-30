@@ -1,9 +1,21 @@
 # LocalChernMarker
-This is a modified script about the calculation of local Chern marker for 0,1,2 dimensional system. The routine bases on the [partial Chern number package](https://github.com/nicodemosvarnava/pcn) of PythTB ([http://www.physics.rutgers.edu/pythtb/index.html](http://www.physics.rutgers.edu/pythtb/index.html)). The routine is revised in a matrix algorithm that speeds up nearly 10 times than the primary code.
 
-**LocalChernMarker.py**
+**Implemented by Jiayu Li**
 
-This script contains three functions: *lcm_2d(my_mode,n_occ)*, *lcm_1d(my_mode,n_occ)*, and *lcm_0d(my_mode,n_occ,i,j)* for calculating the orbital-resolved Chern marker in the spinful tight-binding model with 2,1,0 crystal momenta, respectively.
+This is a modified script about the calculation of local Chern marker for 0,1,2 dimensional system. The routine bases on the [partial Chern number package](https://github.com/nicodemosvarnava/pcn) of [PythTB](http://www.physics.rutgers.edu/pythtb/index.html). The routine is revised in a matrix algorithm that speeds up nearly 10 times than the primary code.
+
+## Update
+- 20231030
+  1. Avaialbe for nspin=1 systems (suggested by Rafael Gonzalez-Hernandez) 
+  2. Reshape the eigenvectors using numpy
+  3. Improve the readability
+  4. Add new demo: Haldane model as an nspin=1 case
+- 20210930
+  Create the package
+
+## LocalChernMarker.py
+
+This script contains three functions: *lcm_2d(my_mode,n_occ)*, *lcm_1d(my_mode,n_occ)*, and *lcm_0d(my_mode,n_occ,i,j)* for calculating the orbital-resolved Chern marker in a tight-binding model with 2,1,0 crystal momenta, respectively.
 
 (1) *lcm_2d(my_model,n_occ)* focuses on a slab model with translational symmetry along in-plane directions (xy), vertically stacking finite slabs along z direction. This function returns Cxy(l) with l the orbital index, including layer, spin, etc.
 
@@ -15,7 +27,7 @@ It is forceful to estimate whether the surface magnetic gap dominates the trivia
 
 (3) *lcm_0d(my_model,n_occ,i,j)* is prepared for a tight-binding model with open boundary condition in all three directions. This function gives Cij(l) with i,j = (0,1,2) for (x,y,z).
 
-**Demo**
+## Demo
 
 Here we provide examples using the script to calculate the local Chern marker in effective MnBi2Te4 models constructed by [PythTB](http://www.physics.rutgers.edu/pythtb/index.html).
 
@@ -23,9 +35,9 @@ Here we provide examples using the script to calculate the local Chern marker in
 
 [2] R.-X. Zhang, F. Wu, and S. Das Sarma, Möbius Insulator and Higher-Order Topology in MnBi2nTe3n+1, [Phys. Rev. Lett. 124, 136407 (2020)](https://doi.org/10.1103/PhysRevLett.124.136407).
 
-**Remark**
+## Remark
 
-The formula we used are followed
+The formulae we used are followed
 
 [3] Raffaello Bianco and Raffaele Resta, Mapping topological order in coordinate space, [Phys. Rev. B 84, 241106(R) (2011)](https://doi.org/10.1103/PhysRevB.84.241106).
 

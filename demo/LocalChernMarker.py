@@ -6,6 +6,11 @@ Routine is based on the extention package of PythTB pcn.py (https://github.com/n
 1.T. Rauch, T. Olsen, D. Vanderbilt, and I. Souza, Phys. Rev. B 98, 115108 (2018)
 2.N. Varnava and D. Vanderbilt, Phys. Rev. B 98, 245117 (2018)
 
+Modified on Sun Oct 29 20:10:22 2023
+- Avaialbe for nspin=1 systems (suggested by Rafael Gonzalez-Hernandez)
+- Reshape the eigenvectors using numpy
+- Improve the readability
+
 @author: Jiayu Li@SUSTech
 """
 
@@ -30,8 +35,8 @@ def lcm_2d(my_model, n_occ):
     
     orbs = my_model._orb
     hops = my_model._hoppings
-    n_hop = len(hops)
     kper = my_model._per
+    # n_hop = len(hops)
 
     
     # generate uniform k-mesh
@@ -46,12 +51,11 @@ def lcm_2d(my_model, n_occ):
             
     # solve system on a uniform 2d k-grid
     print("     Calculating energy eigenvalues E_nk and eigenvectors \psi_nk..")
-    evals, evecs = my_model.solve_all(kpts_uni, eig_vectors=True )
-    # reshape eignvectors
-    evec = np.zeros((n_bands, n_k, n_bands), dtype='complex')
-    for n in range(n_bands):
-        for k in range(n_k):
-            evec[n,k] = [item for sublist in evecs[n,k] for item in sublist]
+    evals, evec = my_model.solve_all(kpts_uni, eig_vectors=True )
+    # reshape eignvectors if n_spin=2
+    if n_spin==2:
+        evec = evec.reshape((n_bands, n_k, n_bands))
+        # print(evec.shape)
     
     # wavefunction matrices of occupied and unoccupied states
     vmat = evec[:n_occ, :, :]
@@ -62,12 +66,14 @@ def lcm_2d(my_model, n_occ):
     dmat = np.zeros((dim_k, n_k, n_bands, n_bands), dtype="complex")
     for ik in range(n_k):
         for ir in range(dim_k):
-            for ihop in range(n_hop):
-                r1 = hops[ihop][1]
-                r2 = hops[ihop][2]
-                r12 = hops[ihop][3][kper] + orbs[r2][kper] - orbs[r1][kper]
-                dmat[ir, ik, 2*r1:2*r1+2:1, 2*r2:2*r2+2:1] += hops[ihop][0] * (-r12[ir]) * np.exp(2.j*np.pi* np.dot(r12, kpts_uni[ik]))
-                dmat[ir, ik, 2*r2:2*r2+2:1, 2*r1:2*r1+2:1] += hops[ihop][0].T.conj() * (r12[ir]) * np.exp(-2.j*np.pi* np.dot(r12, kpts_uni[ik]))
+            for hop in hops:
+                r1 = hop[1]
+                r2 = hop[2]
+                r12 = hop[3][kper] + orbs[r2][kper] - orbs[r1][kper]
+                i1 = int(n_spin * r1)
+                i2 = int(n_spin * r2)
+                dmat[ir, ik, i1:i1+n_spin, i2:i2+n_spin] += hop[0] * (-r12[ir]) * np.exp(2.j*np.pi* np.dot(r12, kpts_uni[ik]))
+                dmat[ir, ik, i2:i2+n_spin, i1:i1+n_spin] += np.conj(hop[0]).T * (r12[ir]) * np.exp(-2.j*np.pi* np.dot(r12, kpts_uni[ik]))
     
     # position matrix
     print("     Calculating position matrices X_vc(k) and Y_vc(k)..")
@@ -104,14 +110,13 @@ def lcm_2d(my_model, n_occ):
 def lcm_1d(my_model, n_occ):
     n_spin = my_model._nspin
     n_orb = my_model._norb
-    dim_k = my_model._dim_k
     n_bands = n_spin * n_orb
     n_unocc = n_bands - n_occ
     
     orbs = my_model._orb
     hops = my_model._hoppings
-    n_hop = len(hops)
     kper = my_model._per
+    # n_hop = len(hops)
     
     # generate uniform k-mesh
     kmesh = 101
@@ -123,12 +128,10 @@ def lcm_1d(my_model, n_occ):
     
     # solve system on a uniform 1d k-mesh
     print("     Calculating energy eigenvalues E_nk and eigenvectors \psi_nk..")
-    evals, evecs = my_model.solve_all(kpts_uni, eig_vectors=True )
-    # reshape eignvectors
-    evec = np.zeros((n_bands, n_k, n_bands), dtype='complex')
-    for n in range(n_bands):
-        for k in range(n_k):
-            evec[n,k] = [item for sublist in evecs[n,k] for item in sublist]
+    evals, evec = my_model.solve_all(kpts_uni, eig_vectors=True )
+    # reshape eignvectors if n_spin=2
+    if n_spin==2:
+        evec = evec.reshape((n_bands, n_k, n_bands))
     
     # wavefunction matrices of occupied and unoccupied states
     vmat = evec[:n_occ, :, :]
@@ -139,12 +142,14 @@ def lcm_1d(my_model, n_occ):
     dmat = np.zeros((2, n_k, n_bands, n_bands), dtype="complex")
     for ik in range(n_k):
         for ir in [0, 2]:
-            for ihop in range(n_hop):
-                r1 = hops[ihop][1]
-                r2 = hops[ihop][2]
-                r12 = hops[ihop][3] + orbs[r2] - orbs[r1]
-                dmat[int(ir/2), ik, 2*r1:2*r1+2:1, 2*r2:2*r2+2:1] += hops[ihop][0] * (-r12[ir]) * np.exp(2.j*np.pi* np.dot(r12[kper], kpts_uni[ik]))
-                dmat[int(ir/2), ik, 2*r2:2*r2+2:1, 2*r1:2*r1+2:1] += hops[ihop][0].T.conj() * (r12[ir]) * np.exp(-2.j*np.pi* np.dot(r12[kper], kpts_uni[ik]))
+            for hop in hops:
+                r1 = hop[1]
+                r2 = hop[2]
+                r12 = hop[3] + orbs[r2] - orbs[r1]
+                i1 = int(n_spin * r1)
+                i2 = int(n_spin * r2)
+                dmat[int(ir/2), ik, i1:i1+n_spin, i2:i2+n_spin] += hop[0] * (-r12[ir]) * np.exp(2.j*np.pi* np.dot(r12[kper], kpts_uni[ik]))
+                dmat[int(ir/2), ik, i2:i2+n_spin, i1:i1+n_spin] += np.conj(hop[0]).T * (r12[ir]) * np.exp(-2.j*np.pi* np.dot(r12[kper], kpts_uni[ik]))
     
     # position matrix
     print("     Calculating position matrices X_vc(k) and Z_vc(k)..")
@@ -184,15 +189,14 @@ def lcm_0d(my_model, n_occ, ii, jj):
     
     orbs = my_model._orb
     hops = my_model._hoppings
-    n_hop = len(hops)
+    # n_hop = len(hops)
     
     # solve system 
     print("     Calculating energy eigenvalues E_n and eigenvectors \psi_n..")
     evals, evecs = my_model.solve_all(eig_vectors=True)
-    # reshape eignvectors
-    evec = np.zeros((n_bands, n_bands), dtype='complex')
-    for n in range(n_bands):
-        evec[n] = [item for sublist in evecs[n] for item in sublist]
+    # reshape eignvectors if n_spin=2
+    if n_spin==2:
+        evec = evec.reshape((n_bands, n_bands))
         
     # wavefunction matrices of occupied and unoccupied states
     vmat = evec[:n_occ]
@@ -202,14 +206,16 @@ def lcm_0d(my_model, n_occ, ii, jj):
     print("     Calculating hopping matrix..")
     dmat = np.zeros((2, n_bands, n_bands), dtype="complex")
     
-    for ihop in range(n_hop):
-        r1 = hops[ihop][1]
-        r2 = hops[ihop][2]
+    for hop in hops:
+        r1 = hop[1]
+        r2 = hop[2]
         r12 = orbs[r2] - orbs[r1]
-        dmat[0, 2*r1:2*r1+2:1, 2*r2:2*r2+2:1] += hops[ihop][0] * (-r12[ii])
-        dmat[1, 2*r1:2*r1+2:1, 2*r2:2*r2+2:1] += hops[ihop][0] * (-r12[jj])
-        dmat[0, 2*r2:2*r2+2:1, 2*r1:2*r1+2:1] += hops[ihop][0].T.conj() * (r12[ii])
-        dmat[1, 2*r2:2*r2+2:1, 2*r1:2*r1+2:1] += hops[ihop][0].T.conj() * (r12[jj])
+        i1 = int(n_spin * r1)
+        i2 = int(n_spin * r2)
+        dmat[0, i1:i1+n_spin, i2:i2+n_spin] += hop[0] * (-r12[ii])
+        dmat[1, i1:i1+n_spin, i2:i2+n_spin] += hop[0] * (-r12[jj])
+        dmat[0, i2:i2+n_spin, i1:i1+n_spin] += np.conj(hop[0]).T * (r12[ii])
+        dmat[1, i2:i2+n_spin, i1:i1+n_spin] += np.conj(hop[0]).T * (r12[jj])
     
     # position matrix
     print("     Calculating position matrices R_i_vc and R_j_vc..")
